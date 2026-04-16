@@ -1,30 +1,21 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:manul_time/main.dart';
+import 'package:manul_time/app.dart';
+import 'package:manul_time/core/constants/app_constants.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('App renders and shows initial counter', (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: ManulTimeApp()),
+    );
+    // Initial counter should be "Manul #0"
+    expect(find.textContaining('Manul #'), findsOneWidget);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('formatCount formats numbers with commas', () {
+    expect(AppConstants.formatCount(BigInt.zero), '0');
+    expect(AppConstants.formatCount(BigInt.from(1234)), '1,234');
+    expect(AppConstants.formatCount(BigInt.from(1234567)), '1,234,567');
   });
 }
